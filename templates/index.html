@@ -1,0 +1,43 @@
+<html lang="en">
+<head>
+    <title>Home</title>
+</head>
+<body>
+{% if auth_state == 'unauthorized' %}
+    <form method="post" action="/set_params">
+        <label>Account ID:
+            <input type="text" name="account_id" placeholder="5755825">
+        </label>
+        <br>
+        <label>Client ID:
+            <input type="text" name="client_id" placeholder="1b53154c47ec234o8er527a8abca14cea1fa">
+        </label>
+        <br>
+        <label>Client Secret:
+            <input type="text" name="client_secret" placeholder="5e8e7245114032dasdasfde2029216bc6afdvbc31d">
+        </label>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+{% elif auth_state == 'authorized' %}
+        <form method="post" action="/set_project">
+        <label>Project ID:
+            <input type="text" name="project_id" value="{{ project_id }}" placeholder="5755825">
+        </label>
+        <br>
+        <label>Message Board ID:
+            <input type="text" name="msg_board_id" value="{{ msg_board_id }}" placeholder="5755825">
+        </label>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+{% endif %}
+<form action="/change_team" method="post">
+    <label>Team #:
+        <input type="text" name="team_num" value="{{ team }}">
+    </label>
+    <br>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>
