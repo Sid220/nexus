@@ -146,7 +146,6 @@ def auth():
 
 
 @app.post('/event')
-@basic_auth.required
 def event():
     data = request.json
     if "eventKey" not in data:
