@@ -20,7 +20,6 @@ app.config['BASIC_AUTH_PASSWORD'] = environ.get('PASSWORD')
 basic_auth = BasicAuth(app)
 
 
-
 @dataclass
 class Config:
     account_id: Optional[str] = None
@@ -186,3 +185,11 @@ def change_team():
     conf.to_toml()
 
     return redirect(url_for('index'))
+
+
+def main():
+    app.run()
+
+
+if __name__ == '__main__':
+    main()
