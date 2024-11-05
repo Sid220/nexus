@@ -6,7 +6,7 @@ from flask import render_template, redirect
 from flask import request
 import dotenv
 from basecampapi.basecampapi import Basecamp
-from main import BCManager
+from bc_mgr import BCManager
 from flask_basicauth import BasicAuth
 from os import environ
 
@@ -187,9 +187,5 @@ def change_team():
     return redirect(url_for('index'))
 
 
-def main():
-    app.run()
-
-
 if __name__ == '__main__':
-    main()
+    app.run()
