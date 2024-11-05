@@ -1,17 +1,24 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import Optional
-
-import requests
 import toml
-from flask import Flask, url_for, session
+from flask import Flask, url_for
 from flask import render_template, redirect
-from authlib.integrations.flask_client import OAuth
 from flask import request
-
+import dotenv
 from basecampapi.basecampapi import Basecamp
 from main import BCManager
+from flask_basicauth import BasicAuth
+from os import environ
+
+dotenv.load_dotenv()
 
 app = Flask(__name__)
+
+app.config['BASIC_AUTH_USERNAME'] = environ.get('APP_USER')
+app.config['BASIC_AUTH_PASSWORD'] = environ.get('PASSWORD')
+
+basic_auth = BasicAuth(app)
+
 
 
 @dataclass
@@ -64,6 +71,7 @@ else:
 
 
 @app.get('/')
+@basic_auth.required
 def index():
     if auth_state == 'needs_code':
         return redirect(verification_link)
@@ -74,6 +82,7 @@ def index():
 
 
 @app.post('/set_project')
+@basic_auth.required
 def set_project():
     global conf
     conf.project_id = request.form.get('project_id')
@@ -87,6 +96,7 @@ def set_project():
 
 
 @app.post('/set_params')
+@basic_auth.required
 def parse_user_args():
     global bc_manager
     account_id = request.form.get('account_id')
@@ -97,7 +107,7 @@ def parse_user_args():
     conf.account_id = account_id
     conf.client_id = client_id
     conf.client_secret = client_secret
-    conf.redirect_uri = "https://localhost:5000/auth"
+    conf.redirect_uri = f"{environ.get('HOST')}/auth"
     conf.to_toml()
 
     global auth_state
@@ -116,6 +126,7 @@ def parse_user_args():
 
 
 @app.get('/auth')
+@basic_auth.required
 def auth():
     global auth_state
     global bc_manager
@@ -136,6 +147,7 @@ def auth():
 
 
 @app.post('/event')
+@basic_auth.required
 def event():
     data = request.json
     if "eventKey" not in data:
@@ -150,7 +162,24 @@ def event():
     return ""
 
 
+@app.post('/reset')
+@basic_auth.required
+def reset():
+    global conf
+    conf.account_id = None
+    conf.client_id = None
+    conf.client_secret = None
+    conf.redirect_uri = None
+    conf.refresh_token = None
+    conf.project_id = None
+    conf.msg_board_id = None
+    conf.to_toml()
+
+    return redirect(url_for('index'))
+
+
 @app.post('/change_team')
+@basic_auth.required
 def change_team():
     global conf
     conf.team = int(request.form.get('team_num'))
