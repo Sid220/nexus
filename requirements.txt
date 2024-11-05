@@ -1,0 +1,6 @@
+toml~=0.10.2
+python-dotenv~=1.0.1
+Flask~=3.0.3
+Flask-BasicAuth~=0.2.0
+requests~=2.32.3
+filetype~=1.2.0
