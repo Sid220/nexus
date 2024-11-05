@@ -174,6 +174,10 @@ def reset():
     conf.msg_board_id = None
     conf.to_toml()
 
+    global auth_state, bc_manager
+    auth_state = 'unauthorized'
+    bc_manager = None
+
     return redirect(url_for('index'))
 
 
